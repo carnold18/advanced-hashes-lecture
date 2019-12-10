@@ -1,4 +1,5 @@
 # Write your code here!
+require 'pry'
 
 def game_hash
     { 
@@ -118,3 +119,111 @@ def game_hash
       }
     }
 end
+
+# get home players
+def home_players
+  game_hash[:home][:players]
+end
+
+def away_players
+  game_hash[:away][:players]
+end
+
+# get away players
+
+
+# get all players 
+def get_all_players
+  # binding.pry
+  away_players + home_players
+end
+
+# find always returns the FIRST item that matches the true / false statement within
+# the do end block
+
+def get_player(player_name)
+  get_all_players.find do |player|
+    player[:player_name] == player_name
+  end
+end
+
+def num_points_scored(player_name)
+  get_player(player_name)[:points]
+end
+
+def shoe_size(player_name)
+  get_player(player_name)[:shoe]
+end
+
+def team_colors(team_name)
+  game_hash.keys.each do |team_key|
+    # binding.pry
+    if team_name == game_hash[team_key][:team_name]
+      return game_hash[team_key][:colors]
+    end
+  end
+end
+
+# def team_names
+#   names = []
+#   game_hash.keys.each do |team_key|
+#     # binding.pry
+#     names.push(game_hash[team_key][:team_name])
+#   end
+#   names
+# end
+
+def team_names
+  game_hash.keys.map do |team_key|
+    game_hash[team_key][:team_name]
+  end
+end
+
+# map and collect are the same in iteration
+
+def player_numbers(team_name)
+  # declare a variable that holds the player numbers for the team
+  array = []
+  game_hash.keys.each do |team_key|
+    # binding.pry
+    if team_name == game_hash[team_key][:team_name]
+      game_hash[team_key][:players].each do |player|
+        array << player[:number]
+      end
+    end
+  end
+  array
+end
+
+def player_stats(name)
+  player = get_player(name)
+  player.delete(:player_name)
+  player
+end
+
+def big_shoe_rebounds
+  get_all_players.max_by do |player|
+    player[:shoe]
+  end[:rebounds]
+end
+
+def most_points_scored
+  get_all_players.max_by do |player|
+    player[:points]
+  end[:player_name]
+end
+
+def winning_team
+  # binding.pry
+  # need each team's total points
+  # need to compare the points of each team
+  home = home_players.reduce(0) { |sum,player| sum + player[:points] }
+  away = away_players.reduce(0) { |sum, player| sum + player[:points] }
+  if home > away
+    game_hash[:home][:team_name]
+  else
+    game_hash[:away][:team_name]
+  end
+
+end
+
